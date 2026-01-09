@@ -13,16 +13,10 @@ dnf5 install -y niri \
 		xdg-desktop-portal-gtk \
 		xdg-desktop-portal-gnome \
 		gdm
+
 copr_install_isolated "zhangyi6324/noctalia-shell" noctalia-shell
-
-echo "Niri and Noctalia Shell installed successfully"
-echo "::endgroup::"
-
-echo "::group:: Configure Session"
-
-# Enable GDM
-systemctl enable gdm
-systemctl set-default graphical.target
+cp /usr/share/doc/niri/default-config.kdl /etc/niri/config.kdl
+sed -i 's/^spawn-at-startup \"waybar\"/\/\/&/' /etc/niri/config.kdl
 
 # Create systemd unit for Noctalia
 mkdir -p /usr/lib/systemd/user
@@ -44,7 +38,16 @@ NOCTALIA
 
 systemctl --global add-wants niri.service noctalia.service
 
-echo "Session configured"
+echo "Niri and Noctalia Shell installed successfully"
+echo "::endgroup::"
+
+echo "::group:: Configure Display Manager"
+
+# Enable GDM
+systemctl enable gdm
+systemctl set-default graphical.target
+
+echo "Display Manager configured"
 echo "::endgroup::"
 
 echo "::group:: Install Additional Utilities"

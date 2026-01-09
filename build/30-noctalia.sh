@@ -15,6 +15,7 @@ dnf5 install -y niri \
 		gdm
 
 copr_install_isolated "zhangyi6324/noctalia-shell" noctalia-shell
+mkdir -p /etc/niri
 cp /usr/share/doc/niri/default-config.kdl /etc/niri/config.kdl
 sed -i 's/^spawn-at-startup \"waybar\"/\/\/&/' /etc/niri/config.kdl
 

@@ -15,21 +15,24 @@ dnf5 install -y niri \
 		gdm
 
 copr_install_isolated "zhangyi6324/noctalia-shell" noctalia-shell
-mkdir -p /etc/niri
-cp /usr/share/doc/niri/default-config.kdl /etc/niri/config.kdl
-sed -i 's/^spawn-at-startup \"waybar\"/\/\/&/' /etc/niri/config.kdl
+
+# Configure default settings for Niri in /etc/skel
+mkdir -p /etc/skel/.config/niri
+cp /usr/share/doc/niri/default-config.kdl /etc/skel/.config/niri/config.kdl
+sed -i 's/^spawn-at-startup \"waybar\"/\/\/&/' /etc/skel/.config/niri/config.kdl
+mkdir -p /etc/skel/.config/quickshell
+ln -s /usr/share/quickshell/noctalia-shell /etc/skel/.config/quickshell/noctalia-shell
 
 # Create systemd unit for Noctalia
 mkdir -p /usr/lib/systemd/user
 cat > /usr/lib/systemd/user/noctalia.service << 'NOCTALIA'
 [Unit]
 Description=Noctalia Shell Service
-PartOf=graphical-session.target
-Requisite=graphical-session.target
+BindsTo=graphical-session.target
 After=graphical-session.target
 
 [Service]
-ExecStart=noctalia-shell
+ExecStart=qs -c noctalia-shell
 Restart=on-failure
 RestartSec=1
 
